@@ -297,6 +297,8 @@ class MLPImputer(nn.Module):
         self._basic_check(x, mask)
         assert x.size(1) == self.n_columns
 
+        x = x * mask
+
         output = self.tab_embed(x, mask)
         output = output.reshape(output.size(0), -1)
         output = self.bottleneck(output)
@@ -423,7 +425,7 @@ class MLPImputer(nn.Module):
                     generated = Normal(mu, sigma * temp).sample()
                 else:
                     logits = output[:, start:end].to(torch.float32)
-                    generated = Categorical(logits=logits / temp).sample()
+                    generated = Categorical(logits=logits / temp).sample().to(x_t.dtype)
 
                 x_t[col_miss, col] = generated
 
