@@ -85,8 +85,8 @@ class TabularEmbedder(nn.Module):
         num_features: torch.Tensor = None,
         cat_features: torch.Tensor = None,
         classes_count: torch.Tensor = None,
-        hidden_embed_dim: int = 512,
-        output_embed_dim: int = 256,
+        d_model: int = 32,
+        embed_dim: int = 256,
     ):
         super().__init__()
 
@@ -117,15 +117,13 @@ class TabularEmbedder(nn.Module):
         self.cat_features = cat_features
         self.classes_count = classes_count
 
-        self.availability_embed = AvailabilityEmbedding(
-            self.n_columns, hidden_embed_dim
-        )
-        self.numeric_embed = NumericEmbedding(num_features.shape[0], hidden_embed_dim)
-        self.categorical_embed = CategoricalEmbedding(classes_count, hidden_embed_dim)
+        self.availability_embed = AvailabilityEmbedding(self.n_columns, embed_dim)
+        self.numeric_embed = NumericEmbedding(num_features.shape[0], embed_dim)
+        self.categorical_embed = CategoricalEmbedding(classes_count, embed_dim)
 
-        self.fc = nn.Linear(2 * hidden_embed_dim, output_embed_dim)
+        self.fc = nn.Linear(2 * embed_dim, d_model)
 
-    def forward(self, table: torch.Tensor, mask: torch.Tensor) -> torch.Tensor:
+    def forward(self, table: torch.Tensor, mask: torch.Tensor):
         assert table.dim() == 2
         assert mask.dim() == 2
         assert table.shape == mask.shape
@@ -168,6 +166,7 @@ class Bottleneck(nn.Module):
         input_dim: int,
         output_dim: int,
         layers: int = 32,
+        dropout: float = 0.1,
         activation: nn.Module = nn.ReLU,
     ):
         super().__init__()
@@ -183,6 +182,7 @@ class Bottleneck(nn.Module):
         for i in range(1, len(bottleneck_dims) - 1):
             layers += [
                 activation(),
+                nn.Dropout(dropout),
                 nn.Linear(bottleneck_dims[i], bottleneck_dims[i + 1]),
             ]
 
@@ -200,11 +200,13 @@ class MLPImputer(nn.Module):
         num_features: torch.Tensor = None,
         cat_features: torch.Tensor = None,
         classes_count: torch.Tensor = None,
-        hidden_embed_dim: int = 512,
-        output_embed_dim: int = 256,
-        bottleneck_output_dim: int = 32,
-        bottleneck_layers: int = 32,
-        head_layers: int = 16,
+        d_model: int = 32,
+        embed_dim: int = 256,
+        encoder_output_dim: int = 32,
+        encoder_layers: int = 16,
+        head_layers: int = 8,
+        dropout: float = 0.1,
+        activation: nn.Module = nn.ReLU,
     ):
         super().__init__()
 
@@ -213,27 +215,31 @@ class MLPImputer(nn.Module):
             num_features,
             cat_features,
             classes_count,
-            hidden_embed_dim,
-            output_embed_dim,
+            d_model,
+            embed_dim,
         )
 
         self.bottleneck = Bottleneck(
-            self.tab_embed.n_columns * output_embed_dim,
-            bottleneck_output_dim,
-            bottleneck_layers,
+            self.tab_embed.n_columns * d_model,
+            encoder_output_dim,
+            encoder_layers,
+            dropout,
+            activation,
         )
 
         self.heads = nn.ModuleList()
         for col in range(self.tab_embed.n_columns):
             if col in self.tab_embed.num_features:
                 model = Bottleneck(
-                    bottleneck_output_dim, 2, head_layers
+                    encoder_output_dim, 2, head_layers, dropout, activation
                 )  # mu, log_sigma
             else:
                 model = Bottleneck(
-                    bottleneck_output_dim,
+                    encoder_output_dim,
                     self.tab_embed.get_classes_count(col),
                     head_layers,
+                    dropout,
+                    activation,
                 )  # logit1, ..., logitK
             self.heads.append(model)
 
@@ -279,24 +285,23 @@ class MLPImputer(nn.Module):
         assert torch.all(torch.logical_or(mask == 0, mask == 1))
 
     @classmethod
-    def get_dropped_mask(
-        cls, x: torch.Tensor, mask: torch.Tensor, drop_rate: float = 0.5
-    ):
+    def transform(cls, x: torch.Tensor, mask: torch.Tensor, drop_rate: float = 0.5):
         cls._basic_check(x, mask)
 
-        random_mask = (torch.rand_like(mask, dtype=torch.float) > drop_rate).to(
+        random_mask = (torch.rand_like(mask, dtype=torch.float32) > drop_rate).to(
             torch.float32
         )
-        new_mask = mask * random_mask
-        new_x = x * new_mask
-        dropped_mask = mask * (1 - new_mask)
+        mask_out = mask * random_mask
+        x_out = x * mask_out
+        dropped = mask * (1 - mask_out)
 
-        return new_x, new_mask, dropped_mask
+        return x_out, mask_out, dropped
 
     def forward(self, x: torch.Tensor, mask: torch.Tensor):
         self._basic_check(x, mask)
         assert x.size(1) == self.n_columns
 
+        mask = mask.to(x.dtype)
         x = x * mask
 
         output = self.tab_embed(x, mask)
@@ -327,10 +332,11 @@ class MLPImputer(nn.Module):
         x: torch.Tensor,
         mask: torch.Tensor,
         eps: float = 1e-6,
-        label_smoothing: float = 0,
+        label_smoothing: float = 0.0,
     ):
         self._basic_check(x, mask)
         assert x.size(1) == self.n_columns
+        assert output.dim() == 2
         assert output.size(1) == self.summary_exit_count_
 
         device = next(self.parameters()).device
@@ -372,14 +378,50 @@ class MLPImputer(nn.Module):
 
         return num_loss + cat_loss
 
+    def uncertainty(self, output: torch.Tensor, mask: torch.Tensor, eps: float = 1e-6):
+        assert output.dim() == 2
+        assert output.size(1) == self.summary_exit_count_
+
+        # затычка, чтобы мы не смотрели на энтропию уже заполненных ячеек
+        entropy = torch.full(
+            size=(output.size(0), self.n_columns),
+            fill_value=float("inf"),
+            dtype=torch.float32,
+            device=output.device,
+        )
+
+        for col in self.num_features:
+            unk = ~mask[:, col].to(torch.bool)
+            if not torch.any(unk):
+                continue
+
+            log_sigma_exit = self.ranges_[col, 0] + 1
+            log_sigma = output[unk, log_sigma_exit]
+
+            h = torch.exp(log_sigma)
+            h_max = torch.max(h) + eps
+            entropy[unk, col] = h / h_max
+
+        for col in self.cat_features:
+            unk = ~mask[:, col].to(torch.bool)
+            if not torch.any(unk):
+                continue
+
+            start, end = self.ranges_[col]
+            classes_count = (end - start).item()
+
+            logits = output[unk, start:end]
+            probs = torch.softmax(logits, dim=1)
+
+            h = -torch.sum(probs * torch.log(probs + eps), dim=1)
+            h_max = torch.log(torch.tensor(classes_count, dtype=torch.float32))
+            entropy[unk, col] = h / h_max
+
+        return entropy
+
     @torch.inference_mode()
-    def gibbs_sample(
-        self,
-        x: torch.Tensor,
-        mask: torch.Tensor,
-        iterations: int = 10,
-        eps: float = 1e-6,
-        temp: float = 1.0,
+    def predict(
+        self, x: torch.Tensor, mask: torch.Tensor, eps: float = 1e-6, temp: float = 1.0
     ):
         self._basic_check(x, mask)
         assert x.size(1) == self.n_columns
@@ -387,57 +429,41 @@ class MLPImputer(nn.Module):
         self.eval()
         device = next(self.parameters()).device
 
-        x_t = x * mask
-        if torch.all(mask):
-            return x
+        mask = mask.clone().to(torch.bool)
+        x_0 = x * mask
+        x_t = x_0.clone()
+        indices = torch.arange(x.size(0), device=device)
 
-        for step in range(iterations):
+        while True:
+            unk_rows = torch.any(~mask, dim=1)
+            if not torch.any(unk_rows):
+                break
 
-            for col in range(self.n_columns):
+            indices = indices[unk_rows]
 
-                col_miss = ~mask[:, col].to(torch.bool)
+            x_t = x_t[unk_rows, :]
+            mask = mask[unk_rows, :]
 
-                if not torch.any(col_miss):
-                    continue
+            output = self.forward(x_t, mask)
+            unc = self.uncertainty(output, mask, eps=eps)
+            col_to_insert = torch.argmin(unc, dim=1)
 
-                if step == 0:
-                    mask_t = mask.clone()
-                else:
-                    mask_t = torch.ones_like(x_t, dtype=torch.float32)
+            best_inserts = torch.zeros_like(x_t)
 
-                model_mask = mask_t[col_miss, :].clone()
-                model_mask[:, col] = 0
+            for col in self.num_features:
+                mu_exit = self.ranges_[col, 0]
+                best_inserts[:, col] = output[:, mu_exit]
 
-                model_x = x_t[col_miss, :].clone()
-                model_x[:, col] = 0
-
-                model_x = model_x.to(device)
-                model_mask = model_mask.to(device)
-
-                output = self.forward(model_x, model_mask)
-
+            for col in self.cat_features:
                 start, end = self.ranges_[col]
+                logits = output[:, start:end]
+                best_inserts[:, col] = torch.argmax(logits, dim=1).to(
+                    best_inserts.dtype
+                )
 
-                if col in self.num_features:
-                    mu = output[:, start].to(torch.float32)
-                    log_sigma = output[:, start + 1].to(torch.float32)
-                    sigma = torch.exp(log_sigma) + eps
-                    generated = Normal(mu, sigma * temp).sample()
-                else:
-                    logits = output[:, start:end].to(torch.float32)
-                    generated = Categorical(logits=logits / temp).sample().to(x_t.dtype)
+            row_idx = torch.arange(indices.size(0), device=device)
+            x_0[indices, col_to_insert] = best_inserts[row_idx, col_to_insert]
+            x_t[row_idx, col_to_insert] = best_inserts[row_idx, col_to_insert]
+            mask[row_idx, col_to_insert] = True
 
-                x_t[col_miss, col] = generated
-
-        return x_t
-
-    @torch.inference_mode()
-    def predict(
-        self,
-        x: torch.Tensor,
-        mask: torch.Tensor,
-        iterations: int = 10,
-        eps: float = 1e-6,
-        temp: float = 1.0,
-    ):
-        return self.gibbs_sample(x, mask, iterations, eps, temp)
+        return x_0
