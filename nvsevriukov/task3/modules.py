@@ -1,9 +1,6 @@
 import torch
 from torch import nn
 
-from torch.distributions.normal import Normal
-from torch.distributions.categorical import Categorical
-
 
 # https://arxiv.org/abs/2203.05556
 class SinusoidalEmbedding(nn.Module):
@@ -219,7 +216,7 @@ class MLPImputer(nn.Module):
             embed_dim,
         )
 
-        self.bottleneck = Bottleneck(
+        self.encoder = Bottleneck(
             self.tab_embed.n_columns * d_model,
             encoder_output_dim,
             encoder_layers,
@@ -306,7 +303,7 @@ class MLPImputer(nn.Module):
 
         output = self.tab_embed(x, mask)
         output = output.reshape(output.size(0), -1)
-        output = self.bottleneck(output)
+        output = self.encoder(output)
 
         out_list = []
         for col, head in enumerate(self.heads):
@@ -420,50 +417,77 @@ class MLPImputer(nn.Module):
         return entropy
 
     @torch.inference_mode()
-    def predict(
-        self, x: torch.Tensor, mask: torch.Tensor, eps: float = 1e-6, temp: float = 1.0
-    ):
+    def predict_naive_bayes(self, x: torch.Tensor, mask: torch.Tensor):
         self._basic_check(x, mask)
         assert x.size(1) == self.n_columns
 
         self.eval()
-        device = next(self.parameters()).device
 
-        mask = mask.clone().to(torch.bool)
-        x_0 = x * mask
-        x_t = x_0.clone()
-        indices = torch.arange(x.size(0), device=device)
+        mask = mask.to(torch.bool)
+        x = x * mask
 
-        while True:
-            unk_rows = torch.any(~mask, dim=1)
-            if not torch.any(unk_rows):
-                break
+        output = self.forward(x, mask)
 
-            indices = indices[unk_rows]
+        best_inserts = torch.zeros_like(x)
 
-            x_t = x_t[unk_rows, :]
-            mask = mask[unk_rows, :]
+        for col in self.num_features:
+            mu_exit = self.ranges_[col, 0]
+            best_inserts[:, col] = output[:, mu_exit]
 
-            output = self.forward(x_t, mask)
-            unc = self.uncertainty(output, mask, eps=eps)
-            col_to_insert = torch.argmin(unc, dim=1)
+        for col in self.cat_features:
+            start, end = self.ranges_[col]
+            logits = output[:, start:end]
+            best_inserts[:, col] = torch.argmax(logits, dim=1).to(best_inserts.dtype)
 
-            best_inserts = torch.zeros_like(x_t)
+        x[~mask] = best_inserts[~mask]
+        return x
 
-            for col in self.num_features:
-                mu_exit = self.ranges_[col, 0]
-                best_inserts[:, col] = output[:, mu_exit]
+    # TODO
+    # @torch.inference_mode()
+    # def predict_uncertainty(
+    #     self, x: torch.Tensor, mask: torch.Tensor, eps: float = 1e-6
+    # ):
+    #     self._basic_check(x, mask)
+    #     assert x.size(1) == self.n_columns
 
-            for col in self.cat_features:
-                start, end = self.ranges_[col]
-                logits = output[:, start:end]
-                best_inserts[:, col] = torch.argmax(logits, dim=1).to(
-                    best_inserts.dtype
-                )
+    #     self.eval()
+    #     device = next(self.parameters()).device
 
-            row_idx = torch.arange(indices.size(0), device=device)
-            x_0[indices, col_to_insert] = best_inserts[row_idx, col_to_insert]
-            x_t[row_idx, col_to_insert] = best_inserts[row_idx, col_to_insert]
-            mask[row_idx, col_to_insert] = True
+    #     mask = mask.clone().to(torch.bool)
+    #     x_0 = x * mask
+    #     x_t = x_0.clone()
+    #     indices = torch.arange(x.size(0), device=device)
 
-        return x_0
+    #     while True:
+    #         unk_rows = torch.any(~mask, dim=1)
+    #         if not torch.any(unk_rows):
+    #             break
+
+    #         indices = indices[unk_rows]
+
+    #         x_t = x_t[unk_rows, :]
+    #         mask = mask[unk_rows, :]
+
+    #         output = self.forward(x_t, mask)
+    #         unc = self._uncertainty(output, mask, eps=eps)
+    #         col_to_insert = torch.argmin(unc, dim=1)
+
+    #         best_inserts = torch.zeros_like(x_t)
+
+    #         for col in self.num_features:
+    #             mu_exit = self.ranges_[col, 0]
+    #             best_inserts[:, col] = output[:, mu_exit]
+
+    #         for col in self.cat_features:
+    #             start, end = self.ranges_[col]
+    #             logits = output[:, start:end]
+    #             best_inserts[:, col] = torch.argmax(logits, dim=1).to(
+    #                 best_inserts.dtype
+    #             )
+
+    #         row_idx = torch.arange(indices.size(0), device=device)
+    #         x_0[indices, col_to_insert] = best_inserts[row_idx, col_to_insert]
+    #         x_t[row_idx, col_to_insert] = best_inserts[row_idx, col_to_insert]
+    #         mask[row_idx, col_to_insert] = True
+
+    #     return x_0
