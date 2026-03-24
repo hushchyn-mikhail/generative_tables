@@ -1,3 +1,5 @@
+from typing import TypeAlias
+
 import torch
 from torch import nn
 
@@ -190,6 +192,9 @@ class Bottleneck(nn.Module):
         return out
 
 
+Head: TypeAlias = Bottleneck
+
+
 class MLPImputer(nn.Module):
     def __init__(
         self,
@@ -227,11 +232,11 @@ class MLPImputer(nn.Module):
         self.heads = nn.ModuleList()
         for col in range(self.tab_embed.n_columns):
             if col in self.tab_embed.num_features:
-                model = Bottleneck(
+                model = Head(
                     encoder_output_dim, 2, head_layers, dropout, activation
-                )  # mu, log_sigma
+                )  # mu, pho
             else:
-                model = Bottleneck(
+                model = Head(
                     encoder_output_dim,
                     self.tab_embed.get_classes_count(col),
                     head_layers,
@@ -326,44 +331,51 @@ class MLPImputer(nn.Module):
     def loss(
         self,
         output: torch.Tensor,
-        x: torch.Tensor,
-        mask: torch.Tensor,
+        target_input: torch.Tensor,
+        target_mask: torch.Tensor,
         eps: float = 1e-6,
         label_smoothing: float = 0.0,
     ):
-        self._basic_check(x, mask)
-        assert x.size(1) == self.n_columns
+        self._basic_check(target_input, target_mask)
+        assert target_input.size(1) == self.n_columns
         assert output.dim() == 2
         assert output.size(1) == self.summary_exit_count_
 
         device = next(self.parameters()).device
 
         num_loss = torch.tensor(0, dtype=torch.float32, device=device)
-        if len(self.num_features) > 0:
-            num_mask = mask[:, self.num_features].to(torch.bool)
-            if torch.sum(num_mask) > 0:
-                mu_ind = self.ranges_[self.num_features, 0]
-                log_sigma_ind = self.ranges_[self.num_features, 0] + 1
+        num_elems = torch.tensor(0, dtype=torch.float32, device=device)
+        for col in self.num_features:
+            col_mask = target_mask[:, col].to(torch.bool)
+            if torch.sum(col_mask) == 0:
+                continue
 
-                mu = output[:, mu_ind]
-                var = torch.exp(2 * output[:, log_sigma_ind])
-                target = x[:, self.num_features]
+            mu_ind = self.ranges_[col, 0]
+            sigma_ind = self.ranges_[col, 0] + 1
 
-                nll = nn.functional.gaussian_nll_loss(
-                    mu, target, var, eps=eps, reduction="none"
-                )
-                num_loss += torch.sum(nll * num_mask) / torch.sum(num_mask)
+            mu = output[:, mu_ind][col_mask]
+            var = nn.functional.softplus(output[:, sigma_ind][col_mask])
+            target = target_input[:, col][col_mask]
+
+            nll = nn.functional.gaussian_nll_loss(
+                mu, target, var, eps=eps, reduction="sum"
+            )
+            num_loss += nll
+            num_elems += target.size(0)
+
+        if num_elems > 0:
+            num_loss /= num_elems
 
         cat_loss = torch.tensor(0, dtype=torch.float32, device=device)
         cat_elems = torch.tensor(0, dtype=torch.float32, device=device)
         for col in self.cat_features:
-            col_mask = mask[:, col].to(torch.bool)
+            col_mask = target_mask[:, col].to(torch.bool)
             if torch.sum(col_mask) == 0:
                 continue
 
             start, end = self.ranges_[col]
             logits = output[:, start:end][col_mask].to(torch.float)
-            target = x[:, col][col_mask].to(torch.long)
+            target = target_input[:, col][col_mask].to(torch.long)
 
             cat_loss += nn.functional.cross_entropy(
                 logits, target, label_smoothing=label_smoothing, reduction="sum"
@@ -374,47 +386,6 @@ class MLPImputer(nn.Module):
             cat_loss /= cat_elems
 
         return num_loss + cat_loss
-
-    def uncertainty(self, output: torch.Tensor, mask: torch.Tensor, eps: float = 1e-6):
-        assert output.dim() == 2
-        assert output.size(1) == self.summary_exit_count_
-
-        # затычка, чтобы мы не смотрели на энтропию уже заполненных ячеек
-        entropy = torch.full(
-            size=(output.size(0), self.n_columns),
-            fill_value=float("inf"),
-            dtype=torch.float32,
-            device=output.device,
-        )
-
-        for col in self.num_features:
-            unk = ~mask[:, col].to(torch.bool)
-            if not torch.any(unk):
-                continue
-
-            log_sigma_exit = self.ranges_[col, 0] + 1
-            log_sigma = output[unk, log_sigma_exit]
-
-            h = torch.exp(log_sigma)
-            h_max = torch.max(h) + eps
-            entropy[unk, col] = h / h_max
-
-        for col in self.cat_features:
-            unk = ~mask[:, col].to(torch.bool)
-            if not torch.any(unk):
-                continue
-
-            start, end = self.ranges_[col]
-            classes_count = (end - start).item()
-
-            logits = output[unk, start:end]
-            probs = torch.softmax(logits, dim=1)
-
-            h = -torch.sum(probs * torch.log(probs + eps), dim=1)
-            h_max = torch.log(torch.tensor(classes_count, dtype=torch.float32))
-            entropy[unk, col] = h / h_max
-
-        return entropy
 
     @torch.inference_mode()
     def predict_naive_bayes(self, x: torch.Tensor, mask: torch.Tensor):
@@ -491,3 +462,60 @@ class MLPImputer(nn.Module):
     #         mask[row_idx, col_to_insert] = True
 
     #     return x_0
+
+    # def uncertainty(self, output: torch.Tensor, mask: torch.Tensor, eps: float = 1e-6):
+    #     assert output.dim() == 2
+    #     assert output.size(1) == self.summary_exit_count_
+
+    #     # затычка, чтобы мы не смотрели на энтропию уже заполненных ячеек
+    #     entropy = torch.full(
+    #         size=(output.size(0), self.n_columns),
+    #         fill_value=float("inf"),
+    #         dtype=torch.float32,
+    #         device=output.device,
+    #     )
+
+    #     for col in self.num_features:
+    #         unk = ~mask[:, col].to(torch.bool)
+    #         if not torch.any(unk):
+    #             continue
+
+    #         log_sigma_exit = self.ranges_[col, 0] + 1
+    #         log_sigma = output[unk, log_sigma_exit]
+
+    #         h = torch.exp(log_sigma)
+    #         h_max = torch.max(h) + eps
+    #         entropy[unk, col] = h / h_max
+
+    #     for col in self.cat_features:
+    #         unk = ~mask[:, col].to(torch.bool)
+    #         if not torch.any(unk):
+    #             continue
+
+    #         start, end = self.ranges_[col]
+    #         classes_count = (end - start).item()
+
+    #         logits = output[unk, start:end]
+    #         probs = torch.softmax(logits, dim=1)
+
+    #         h = -torch.sum(probs * torch.log(probs + eps), dim=1)
+    #         h_max = torch.log(torch.tensor(classes_count, dtype=torch.float32))
+    #         entropy[unk, col] = h / h_max
+
+    #     return entropy
+
+
+# class BayesianParameter(nn.Module):
+#     def __init__(self, size: torch.Size, prior_loc: float = 0.0, prior_scale: float = 1.0):
+#         super().__init__()
+
+#         self.loc = nn.Parameter(torch.empty(size))
+#         self.scale = nn.Parameter(torch.empty(size))
+
+#         torch.nn.init.
+
+#     def sample(self):
+#         eps = torch.randn_like(self.loc)
+#         out = self.loc + self.scale
+
+#     def forward()
