@@ -1,0 +1,36 @@
+{
+  "dataset": "shoppers",
+  "prediction_file": "tabsyn/prediction_shoppers.csv",
+  "numeric_columns": [
+    "Administrative",
+    "Administrative_Duration",
+    "Informational",
+    "Informational_Duration",
+    "ProductRelated",
+    "ProductRelated_Duration",
+    "BounceRates",
+    "ExitRates",
+    "PageValues",
+    "SpecialDay"
+  ],
+  "categorical_columns": [
+    "Month",
+    "OperatingSystems",
+    "Browser",
+    "Region",
+    "TrafficType",
+    "VisitorType",
+    "Weekend",
+    "Revenue"
+  ],
+  "numeric_mean": {
+    "rmse": 1.0454868636161971,
+    "mae": 0.46174086992683716
+  },
+  "categorical_mean": {
+    "accuracy": 0.551094890510949,
+    "f1": 0.3590124261476995,
+    "precision": 0.380034417246292,
+    "recall": 0.34690240659930827
+  }
+}

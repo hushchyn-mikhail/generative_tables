@@ -1,0 +1,33 @@
+{
+  "dataset": "adult",
+  "prediction_file": "tabsyn/prediction_adult.csv",
+  "numeric_columns": [
+    "age",
+    "fnlwgt",
+    "education.num",
+    "capital.gain",
+    "capital.loss",
+    "hours.per.week"
+  ],
+  "categorical_columns": [
+    "workclass",
+    "education",
+    "marital.status",
+    "occupation",
+    "relationship",
+    "race",
+    "sex",
+    "native.country",
+    "income"
+  ],
+  "numeric_mean": {
+    "rmse": 1.0168593171580433,
+    "mae": 0.5429402879260211
+  },
+  "categorical_mean": {
+    "accuracy": 0.6761664926396823,
+    "f1": 0.3872612230324069,
+    "precision": 0.39904544001213377,
+    "recall": 0.38308413027428834
+  }
+}
