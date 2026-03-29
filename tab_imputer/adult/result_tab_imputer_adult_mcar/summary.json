@@ -1,0 +1,33 @@
+{
+  "dataset": "adult",
+  "prediction_file": "tab_imputer/adult/tab_imputer_adult_mcar.csv",
+  "numeric_columns": [
+    "age",
+    "fnlwgt",
+    "education.num",
+    "capital.gain",
+    "capital.loss",
+    "hours.per.week"
+  ],
+  "categorical_columns": [
+    "workclass",
+    "education",
+    "marital.status",
+    "occupation",
+    "relationship",
+    "race",
+    "sex",
+    "native.country",
+    "income"
+  ],
+  "numeric_mean": {
+    "rmse": 0.850915040291719,
+    "mae": 0.44825536056630777
+  },
+  "categorical_mean": {
+    "accuracy": 0.7695909651075314,
+    "f1": 0.4643889255801103,
+    "precision": 0.534412576413079,
+    "recall": 0.4521719576593828
+  }
+}

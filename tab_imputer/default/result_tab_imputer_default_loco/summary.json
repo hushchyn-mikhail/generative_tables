@@ -1,0 +1,42 @@
+{
+  "dataset": "default",
+  "prediction_file": "tab_imputer/default/tab_imputer_default_loco.csv",
+  "numeric_columns": [
+    "LIMIT_BAL",
+    "AGE",
+    "BILL_AMT1",
+    "BILL_AMT2",
+    "BILL_AMT3",
+    "BILL_AMT4",
+    "BILL_AMT5",
+    "BILL_AMT6",
+    "PAY_AMT1",
+    "PAY_AMT2",
+    "PAY_AMT3",
+    "PAY_AMT4",
+    "PAY_AMT5",
+    "PAY_AMT6"
+  ],
+  "categorical_columns": [
+    "SEX",
+    "EDUCATION",
+    "MARRIAGE",
+    "PAY_0",
+    "PAY_2",
+    "PAY_3",
+    "PAY_4",
+    "PAY_5",
+    "PAY_6",
+    "default payment next month"
+  ],
+  "numeric_mean": {
+    "rmse": 0.6105873970976093,
+    "mae": 0.2730555509671454
+  },
+  "categorical_mean": {
+    "accuracy": 0.7699999999999999,
+    "f1": 0.4594802915000235,
+    "precision": 0.4994091571849239,
+    "recall": 0.474897155410675
+  }
+}

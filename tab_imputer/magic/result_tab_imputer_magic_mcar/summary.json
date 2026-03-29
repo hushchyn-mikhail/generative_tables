@@ -1,0 +1,29 @@
+{
+  "dataset": "magic",
+  "prediction_file": "tab_imputer/magic/tab_imputer_magic_mcar.csv",
+  "numeric_columns": [
+    "Length",
+    "Width",
+    "Size",
+    "Conc",
+    "Conc1",
+    "Asym",
+    "M3Long",
+    "M3Trans",
+    "Alpha",
+    "Dist"
+  ],
+  "categorical_columns": [
+    "class"
+  ],
+  "numeric_mean": {
+    "rmse": 0.5473594751717676,
+    "mae": 0.37891900699651754
+  },
+  "categorical_mean": {
+    "accuracy": 0.8973684210526316,
+    "f1": 0.8840003443984377,
+    "precision": 0.8997595138279548,
+    "recall": 0.8731646644824658
+  }
+}

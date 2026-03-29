@@ -1,0 +1,29 @@
+{
+  "dataset": "magic",
+  "prediction_file": "catboost/magic/catboost_magic_mcar.csv",
+  "numeric_columns": [
+    "Length",
+    "Width",
+    "Size",
+    "Conc",
+    "Conc1",
+    "Asym",
+    "M3Long",
+    "M3Trans",
+    "Alpha",
+    "Dist"
+  ],
+  "categorical_columns": [
+    "class"
+  ],
+  "numeric_mean": {
+    "rmse": 1.0004299314624965,
+    "mae": 0.6560363879660068
+  },
+  "categorical_mean": {
+    "accuracy": 0.7789473684210526,
+    "f1": 0.7617839338487715,
+    "precision": 0.758415725047081,
+    "recall": 0.7664118432229099
+  }
+}

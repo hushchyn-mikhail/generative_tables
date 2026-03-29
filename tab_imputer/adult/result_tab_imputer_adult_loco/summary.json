@@ -1,0 +1,33 @@
+{
+  "dataset": "adult",
+  "prediction_file": "tab_imputer/adult/tab_imputer_adult_loco.csv",
+  "numeric_columns": [
+    "age",
+    "fnlwgt",
+    "education.num",
+    "capital.gain",
+    "capital.loss",
+    "hours.per.week"
+  ],
+  "categorical_columns": [
+    "workclass",
+    "education",
+    "marital.status",
+    "occupation",
+    "relationship",
+    "race",
+    "sex",
+    "native.country",
+    "income"
+  ],
+  "numeric_mean": {
+    "rmse": 0.7713586250455288,
+    "mae": 0.42183220547857053
+  },
+  "categorical_mean": {
+    "accuracy": 0.794866545189007,
+    "f1": 0.4982582354338564,
+    "precision": 0.5552095624816084,
+    "recall": 0.4957714108878934
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "dataset": "adult",
+  "prediction_file": "catboost/adult/catboost_adult_mcar.csv",
+  "numeric_columns": [
+    "age",
+    "fnlwgt",
+    "education.num",
+    "capital.gain",
+    "capital.loss",
+    "hours.per.week"
+  ],
+  "categorical_columns": [
+    "workclass",
+    "education",
+    "marital.status",
+    "occupation",
+    "relationship",
+    "race",
+    "sex",
+    "native.country",
+    "income"
+  ],
+  "numeric_mean": {
+    "rmse": 1.0071122316586736,
+    "mae": 0.5627671337588169
+  },
+  "categorical_mean": {
+    "accuracy": 0.7084290602961838,
+    "f1": 0.41369015178883733,
+    "precision": 0.4893147492448444,
+    "recall": 0.41752128921978154
+  }
+}

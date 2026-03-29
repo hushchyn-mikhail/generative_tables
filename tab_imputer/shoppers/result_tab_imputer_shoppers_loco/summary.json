@@ -1,0 +1,36 @@
+{
+  "dataset": "shoppers",
+  "prediction_file": "tab_imputer/shoppers/tab_imputer_shoppers_loco.csv",
+  "numeric_columns": [
+    "Administrative",
+    "Administrative_Duration",
+    "Informational",
+    "Informational_Duration",
+    "ProductRelated",
+    "ProductRelated_Duration",
+    "BounceRates",
+    "ExitRates",
+    "PageValues",
+    "SpecialDay"
+  ],
+  "categorical_columns": [
+    "Month",
+    "OperatingSystems",
+    "Browser",
+    "Region",
+    "TrafficType",
+    "VisitorType",
+    "Weekend",
+    "Revenue"
+  ],
+  "numeric_mean": {
+    "rmse": 0.5667878246446312,
+    "mae": 0.2842319223407832
+  },
+  "categorical_mean": {
+    "accuracy": 0.6709245742092458,
+    "f1": 0.37712763764841406,
+    "precision": 0.4499419697909512,
+    "recall": 0.3725836654773117
+  }
+}

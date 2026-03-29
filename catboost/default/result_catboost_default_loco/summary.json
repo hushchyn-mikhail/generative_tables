@@ -1,0 +1,42 @@
+{
+  "dataset": "default",
+  "prediction_file": "catboost/default/catboost_default_loco.csv",
+  "numeric_columns": [
+    "LIMIT_BAL",
+    "AGE",
+    "BILL_AMT1",
+    "BILL_AMT2",
+    "BILL_AMT3",
+    "BILL_AMT4",
+    "BILL_AMT5",
+    "BILL_AMT6",
+    "PAY_AMT1",
+    "PAY_AMT2",
+    "PAY_AMT3",
+    "PAY_AMT4",
+    "PAY_AMT5",
+    "PAY_AMT6"
+  ],
+  "categorical_columns": [
+    "SEX",
+    "EDUCATION",
+    "MARRIAGE",
+    "PAY_0",
+    "PAY_2",
+    "PAY_3",
+    "PAY_4",
+    "PAY_5",
+    "PAY_6",
+    "default payment next month"
+  ],
+  "numeric_mean": {
+    "rmse": 0.4508865166228605,
+    "mae": 0.19477247101191758
+  },
+  "categorical_mean": {
+    "accuracy": 0.8300666666666666,
+    "f1": 0.5761929410623877,
+    "precision": 0.6464838101297657,
+    "recall": 0.5666735702317973
+  }
+}

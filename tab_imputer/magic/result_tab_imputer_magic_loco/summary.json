@@ -1,0 +1,29 @@
+{
+  "dataset": "magic",
+  "prediction_file": "tab_imputer/magic/tab_imputer_magic_loco.csv",
+  "numeric_columns": [
+    "Length",
+    "Width",
+    "Size",
+    "Conc",
+    "Conc1",
+    "Asym",
+    "M3Long",
+    "M3Trans",
+    "Alpha",
+    "Dist"
+  ],
+  "categorical_columns": [
+    "class"
+  ],
+  "numeric_mean": {
+    "rmse": 0.5357995423900754,
+    "mae": 0.3647286080244426
+  },
+  "categorical_mean": {
+    "accuracy": 0.8890641430073607,
+    "f1": 0.8758271675758664,
+    "precision": 0.8877925536998923,
+    "recall": 0.8671619351911735
+  }
+}
