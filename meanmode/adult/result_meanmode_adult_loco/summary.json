@@ -1,0 +1,33 @@
+{
+  "dataset": "adult",
+  "prediction_file": "meanmode/adult/meanmode_adult_loco.csv",
+  "numeric_columns": [
+    "age",
+    "fnlwgt",
+    "education.num",
+    "capital.gain",
+    "capital.loss",
+    "hours.per.week"
+  ],
+  "categorical_columns": [
+    "workclass",
+    "education",
+    "marital.status",
+    "occupation",
+    "relationship",
+    "race",
+    "sex",
+    "native.country",
+    "income"
+  ],
+  "numeric_mean": {
+    "rmse": 1.0088003000054326,
+    "mae": 0.6021180159558108
+  },
+  "categorical_mean": {
+    "accuracy": 0.5755515972947334,
+    "f1": 0.15126637401836163,
+    "precision": 0.12727167254871874,
+    "recall": 0.19713242568933625
+  }
+}

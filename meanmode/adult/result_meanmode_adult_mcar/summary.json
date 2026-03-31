@@ -1,0 +1,33 @@
+{
+  "dataset": "adult",
+  "prediction_file": "meanmode/adult/meanmode_adult_mcar.csv",
+  "numeric_columns": [
+    "age",
+    "fnlwgt",
+    "education.num",
+    "capital.gain",
+    "capital.loss",
+    "hours.per.week"
+  ],
+  "categorical_columns": [
+    "workclass",
+    "education",
+    "marital.status",
+    "occupation",
+    "relationship",
+    "race",
+    "sex",
+    "native.country",
+    "income"
+  ],
+  "numeric_mean": {
+    "rmse": 1.0316205637904539,
+    "mae": 0.5997577106558836
+  },
+  "categorical_mean": {
+    "accuracy": 0.5768758974020934,
+    "f1": 0.1527044477187949,
+    "precision": 0.128471781140434,
+    "recall": 0.19874338624338625
+  }
+}

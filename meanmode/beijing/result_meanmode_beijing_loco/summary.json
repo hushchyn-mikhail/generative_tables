@@ -1,0 +1,30 @@
+{
+  "dataset": "beijing",
+  "prediction_file": "meanmode/beijing/meanmode_beijing_loco.csv",
+  "numeric_columns": [
+    "pm2.5",
+    "DEWP",
+    "TEMP",
+    "PRES",
+    "Iws",
+    "Is",
+    "Ir"
+  ],
+  "categorical_columns": [
+    "year",
+    "month",
+    "day",
+    "hour",
+    "cbwd"
+  ],
+  "numeric_mean": {
+    "rmse": 0.9159299012318444,
+    "mae": 0.6056066456748467
+  },
+  "categorical_mean": {
+    "accuracy": 0.14295977011494254,
+    "f1": 0.04341121763195506,
+    "precision": 0.02776205815103201,
+    "recall": 0.12145161290322579
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "dataset": "magic",
+  "prediction_file": "meanmode/magic/meanmode_magic_mcar.csv",
+  "numeric_columns": [
+    "Length",
+    "Width",
+    "Size",
+    "Conc",
+    "Conc1",
+    "Asym",
+    "M3Long",
+    "M3Trans",
+    "Alpha",
+    "Dist"
+  ],
+  "categorical_columns": [
+    "class"
+  ],
+  "numeric_mean": {
+    "rmse": 0.9951846777302154,
+    "mae": 0.7375441909108724
+  },
+  "categorical_mean": {
+    "accuracy": 0.6473684210526316,
+    "f1": 0.3929712460063898,
+    "precision": 0.3236842105263158,
+    "recall": 0.5
+  }
+}

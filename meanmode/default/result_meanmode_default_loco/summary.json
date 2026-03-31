@@ -1,0 +1,42 @@
+{
+  "dataset": "default",
+  "prediction_file": "meanmode/default/meanmode_default_loco.csv",
+  "numeric_columns": [
+    "LIMIT_BAL",
+    "AGE",
+    "BILL_AMT1",
+    "BILL_AMT2",
+    "BILL_AMT3",
+    "BILL_AMT4",
+    "BILL_AMT5",
+    "BILL_AMT6",
+    "PAY_AMT1",
+    "PAY_AMT2",
+    "PAY_AMT3",
+    "PAY_AMT4",
+    "PAY_AMT5",
+    "PAY_AMT6"
+  ],
+  "categorical_columns": [
+    "SEX",
+    "EDUCATION",
+    "MARRIAGE",
+    "PAY_0",
+    "PAY_2",
+    "PAY_3",
+    "PAY_4",
+    "PAY_5",
+    "PAY_6",
+    "default payment next month"
+  ],
+  "numeric_mean": {
+    "rmse": 0.9749383770084937,
+    "mae": 0.5558153731089283
+  },
+  "categorical_mean": {
+    "accuracy": 0.5604333333333333,
+    "f1": 0.15505149569510485,
+    "precision": 0.1254500420875421,
+    "recall": 0.2065909090909091
+  }
+}
