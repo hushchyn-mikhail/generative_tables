@@ -14,8 +14,10 @@ from torch.utils.data import DataLoader
 from modules import RegressionImputer
 from utils import TabularDataset
 
+MISSING_TOKENS = ["", " ", "nan", "NaN", "None", "NULL", "null", "?", "-", "—"]
 
-def run_evaluation(dataset_name: str, prediction_path: str, output_dir: str):
+
+def run_external_evaluation(dataset_name: str, prediction_path: str, output_dir: str):
     subprocess.run(
         [
             "python",
@@ -63,7 +65,7 @@ def main(dataset: str):
 
     def load_test():
         test_df = pd.read_csv(TEST_PATH)
-        test_df.replace([" ?", "?"], np.nan, inplace=True)
+        test_df.replace(MISSING_TOKENS, np.nan, inplace=True)
         test_array = test_df.to_numpy(dtype=object)
 
         encoder = joblib.load(f"{DATASET_NAME}/{DATASET_NAME}_encoder.joblib")
@@ -204,11 +206,11 @@ def main(dataset: str):
 
     loco_pred_path = f"regression/{DATASET_NAME}/regression_{DATASET_NAME}_loco.csv"
     loco_out_dir = f"regression/{DATASET_NAME}/result_regression_{DATASET_NAME}_loco"
-    run_evaluation(DATASET_NAME, loco_pred_path, loco_out_dir)
+    run_external_evaluation(DATASET_NAME, loco_pred_path, loco_out_dir)
 
     mcar_pred_path = f"regression/{DATASET_NAME}/regression_{DATASET_NAME}_mcar.csv"
     mcar_out_dir = f"regression/{DATASET_NAME}/result_regression_{DATASET_NAME}_mcar"
-    run_evaluation(DATASET_NAME, mcar_pred_path, mcar_out_dir)
+    run_external_evaluation(DATASET_NAME, mcar_pred_path, mcar_out_dir)
 
 
 if __name__ == "__main__":

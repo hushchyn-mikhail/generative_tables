@@ -96,7 +96,7 @@ class RegressionImputer(nn.Module):
         assert torch.all(~x.isnan())
 
         assert mask.dtype in (torch.bool, torch.float32, torch.float64)
-        if mask.dtype == torch.float:
+        if mask.dtype.is_floating_point:
             assert torch.all(~mask.isnan())
 
         assert torch.all(torch.logical_or(mask == 0, mask == 1))
@@ -110,26 +110,38 @@ class RegressionImputer(nn.Module):
 
         return self.classes_count[ind].item()
 
+    def prepare_input(self, x: torch.Tensor, mask: torch.Tensor):
+        out = x.clone()
+
+        # if cat. feature is 0...K, then None must be encoded as K + 1
+        for col in self.cat_features:
+            col_mask = mask[:, col] == 0
+            if torch.sum(col_mask) == 0:
+                continue
+
+            none_token = self.get_classes_count(col)
+            out[col_mask, col] = none_token
+
+        return out
+
     def forward(self, x: torch.Tensor, mask: torch.Tensor):
         self._basic_check(x, mask)
         assert x.size(1) == self.n_columns
 
-        x = x.clone()
-        mask = mask.to(bool)
-        x = x * mask
+        mask = mask.to(torch.bool)
+        x_prepared = self.prepare_input(x, mask)
 
         out_list = []
-
         for col, head in enumerate(self.heads):
             take = torch.ones(size=(self.n_columns,), dtype=torch.bool, device=x.device)
             take[col] = False
-            x_input = x[:, take]
+            x_input = x_prepared[:, take]
             theta = head(x_input)
 
             out_list.append(theta)
 
-        out = torch.cat(out_list, dim=1)
-        return out
+        output = torch.cat(out_list, dim=1)
+        return output
 
     def loss(
         self,
@@ -186,9 +198,8 @@ class RegressionImputer(nn.Module):
 
         self.eval()
 
-        x = x.clone()
         mask = mask.to(torch.bool)
-        x = x * mask
+        x_prepared = self.prepare_input(x, mask)
 
         best_inserts = torch.zeros_like(x)
 
@@ -199,10 +210,11 @@ class RegressionImputer(nn.Module):
 
             take = torch.ones(self.n_columns, dtype=torch.bool, device=x.device)
             take[col] = False
-            x_input = x[col_mask][:, take]
+            x_input = x_prepared[col_mask][:, take]
             pred = head.predict(x_input).to(best_inserts.dtype)
 
             best_inserts[col_mask, col] = pred
 
-        x[~mask] = best_inserts[~mask]
-        return x
+        output = x.clone()
+        output[~mask] = best_inserts[~mask]
+        return output
