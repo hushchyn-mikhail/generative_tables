@@ -16,7 +16,7 @@ from sklearn.metrics import (
 from sklearn.preprocessing import StandardScaler
 
 
-MISSING_TOKENS = {"", " ", "nan", "NaN", "None", "NULL", "null", "?", "-", "—"}
+MISSING_TOKENS = {"", " ", "nan", "NaN", "None", "NULL", "null", "?", " ?", "-", "—"}
 
 
 def sanitize_num(arr: Iterable) -> np.ndarray:

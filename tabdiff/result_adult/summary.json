@@ -1,0 +1,33 @@
+{
+  "dataset": "adult",
+  "prediction_file": "tabdiff/prediction_adult.csv",
+  "numeric_columns": [
+    "age",
+    "fnlwgt",
+    "education.num",
+    "capital.gain",
+    "capital.loss",
+    "hours.per.week"
+  ],
+  "categorical_columns": [
+    "workclass",
+    "education",
+    "marital.status",
+    "occupation",
+    "relationship",
+    "race",
+    "sex",
+    "native.country",
+    "income"
+  ],
+  "numeric_mean": {
+    "rmse": 1.0727546795261402,
+    "mae": 0.5562516869275964
+  },
+  "categorical_mean": {
+    "accuracy": 0.6162534455438975,
+    "f1": 0.339839044388188,
+    "precision": 0.3405811760235081,
+    "recall": 0.3395037359399967
+  }
+}

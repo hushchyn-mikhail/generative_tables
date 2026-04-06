@@ -1,6 +1,6 @@
 {
   "dataset": "adult",
-  "prediction_file": "prediction_adult.csv",
+  "prediction_file": "tabsyn/prediction_adult.csv",
   "numeric_columns": [
     "age",
     "fnlwgt",
@@ -21,13 +21,13 @@
     "income"
   ],
   "numeric_mean": {
-    "rmse": 1.0685057053906732,
-    "mae": 0.5553145319638669
+    "rmse": 1.0739674496903049,
+    "mae": 0.5307598923315552
   },
   "categorical_mean": {
-    "accuracy": 0.6161101215459055,
-    "f1": 0.35132472576188806,
-    "precision": 0.35376349299909804,
-    "recall": 0.35029309259641184
+    "accuracy": 0.6779053224085697,
+    "f1": 0.37999556026539544,
+    "precision": 0.389335027787456,
+    "recall": 0.37658892570644337
   }
 }
