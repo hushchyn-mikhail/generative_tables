@@ -30,13 +30,13 @@
     "default payment next month"
   ],
   "numeric_mean": {
-    "rmse": 1.0352056410254176,
-    "mae": 0.38890571988630646
+    "rmse": 1.0352130415752543,
+    "mae": 0.3888837955835167
   },
   "categorical_mean": {
-    "accuracy": 0.0,
-    "f1": 0.0,
-    "precision": 0.0,
-    "recall": 0.0
+    "accuracy": 0.6973431933666504,
+    "f1": 0.4443914050936685,
+    "precision": 0.4459579682907003,
+    "recall": 0.48532848130410977
   }
 }

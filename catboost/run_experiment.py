@@ -1,4 +1,5 @@
 import argparse
+import json
 
 import subprocess
 import joblib
@@ -49,6 +50,10 @@ def main(dataset: str):
     RANDOM_STATE = 0
     MISSING_RATE = 0.2
 
+    with open("./metadata.json", "r", encoding="utf-8") as f:
+        config = json.load(f)
+    MISSING_TOKENS = config["missing_tokens"]
+
     def seed_everything(seed):
         torch.manual_seed(seed)
         np.random.seed(seed)
@@ -58,7 +63,7 @@ def main(dataset: str):
 
     def load_test():
         test_df = pd.read_csv(TEST_PATH)
-        test_df.replace([" ?", "?"], np.nan, inplace=True)
+        test_df.replace(MISSING_TOKENS, np.nan, inplace=True)
         test_array = test_df.to_numpy(dtype=object)
 
         return test_array
@@ -112,6 +117,13 @@ def main(dataset: str):
         rng = np.random.default_rng(random_state)
         mask = rng.random(X.shape) < missing_rate
 
+        cat_cols = model.cat_features
+        num_cols = model.num_features
+
+        print("Total masked:", mask.sum())
+        print("Masked numeric:", mask[:, num_cols].sum())
+        print("Masked categorical:", mask[:, cat_cols].sum())
+
         X_corrupted = X.astype(object).copy()
         X_corrupted[mask] = np.nan
 
@@ -119,6 +131,10 @@ def main(dataset: str):
 
         out = np.full(X.shape, fill_value=None, dtype=object)
         out[mask] = pred[mask]
+
+        for col in model.cat_features:
+            col_mask = ~mask[:, col]
+            out[col_mask, col] = "?"
 
         columns_names = model.encoder.columns_names
         if columns_names is None:
