@@ -13,8 +13,6 @@ import torch
 
 from modules import MeanModeImputer
 
-MISSING_TOKENS = ["", " ", "nan", "NaN", "None", "NULL", "null", "?", "-", "—"]
-
 
 def main(dataset: str):
     DATASET_NAME = dataset
@@ -57,6 +55,7 @@ def main(dataset: str):
 
     NUM_FEATURES = np.array(dataset_metadata["num_features"], dtype=np.int64)
     CAT_FEATURES = np.array(dataset_metadata["cat_features"], dtype=np.int64)
+    MISSING_TOKENS = config["missing_tokens"]
 
     print("Names:", *COLUMNS_NAMES)
     print("Numeric features:", *NUM_FEATURES)
