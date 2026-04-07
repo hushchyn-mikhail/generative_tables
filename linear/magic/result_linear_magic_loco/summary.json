@@ -1,0 +1,29 @@
+{
+  "dataset": "magic",
+  "prediction_file": "linear/magic/linear_magic_loco.csv",
+  "numeric_columns": [
+    "Length",
+    "Width",
+    "Size",
+    "Conc",
+    "Conc1",
+    "Asym",
+    "M3Long",
+    "M3Trans",
+    "Alpha",
+    "Dist"
+  ],
+  "categorical_columns": [
+    "class"
+  ],
+  "numeric_mean": {
+    "rmse": 0.6589175138111538,
+    "mae": 0.45221586875185293
+  },
+  "categorical_mean": {
+    "accuracy": 0.7949526813880127,
+    "f1": 0.7653061353629722,
+    "precision": 0.7845857988165681,
+    "recall": 0.7553379924129078
+  }
+}
