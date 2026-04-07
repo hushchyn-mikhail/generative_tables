@@ -368,7 +368,7 @@ class TabImputer(nn.Module):
         assert torch.all(~x.isnan())
 
         assert mask.dtype in (torch.bool, torch.float32, torch.float64)
-        if mask.dtype == torch.float:
+        if mask.dtype.is_floating_point:
             assert torch.all(~mask.isnan())
 
         assert torch.all(torch.logical_or(mask == 0, mask == 1))

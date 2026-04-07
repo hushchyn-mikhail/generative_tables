@@ -1,6 +1,7 @@
 import argparse
-import subprocess
+import json
 
+import subprocess
 from pathlib import Path
 from tqdm import tqdm
 import joblib
@@ -51,6 +52,10 @@ def main(dataset: str):
     RANDOM_STATE = 0
     MISSING_RATE = 0.2
 
+    with open("./metadata.json", "r", encoding="utf-8") as f:
+        config = json.load(f)
+    MISSING_TOKENS = config["missing_tokens"]
+
     def seed_everything(seed):
         torch.manual_seed(seed)
         np.random.seed(seed)
@@ -60,7 +65,7 @@ def main(dataset: str):
 
     def load_test():
         test_df = pd.read_csv(TEST_PATH)
-        test_df.replace([" ?", "?"], np.nan, inplace=True)
+        test_df.replace(MISSING_TOKENS, np.nan, inplace=True)
         test_array = test_df.to_numpy(dtype=object)
 
         encoder = joblib.load(f"{DATASET_NAME}/{DATASET_NAME}_encoder.joblib")
@@ -161,6 +166,13 @@ def main(dataset: str):
         rng = np.random.default_rng(random_state)
         mcar_mask = rng.random(loader.dataset.table.shape) < missing_rate
 
+        cat_cols = model.cat_features
+        num_cols = model.num_features
+
+        print("Total masked:", mcar_mask.sum())
+        print("Masked numeric:", mcar_mask[:, num_cols].sum())
+        print("Masked categorical:", mcar_mask[:, cat_cols].sum())
+
         out = []
         start = 0
 
@@ -192,6 +204,10 @@ def main(dataset: str):
 
         out = np.concat(out, axis=0)
         out = loader.dataset.encoder.inverse_transform(out)
+
+        for col in model.cat_features:
+            col_mask = ~mcar_mask[:, col]
+            out[col_mask, col] = "?"
 
         columns_names = loader.dataset.encoder.columns_names
         if columns_names is None:
