@@ -1,0 +1,21 @@
+{
+  "dataset_name": "shoppers",
+  "model_name": "tabdiff",
+  "dataset_dir": "/Users/romandegtarev/generative_tabels/data/shoppers",
+  "real_path": "/Users/romandegtarev/generative_tabels/data/shoppers/train.csv",
+  "metadata_path": "/Users/romandegtarev/generative_tabels/data/shoppers/info.json",
+  "pred_path": "/Users/romandegtarev/generative_tabels/tabdiff/prediction_shoppers.csv",
+  "n_rows_real": 11098,
+  "n_rows_synthetic": 1234,
+  "n_columns": 18,
+  "train_filename": "train.csv",
+  "info_filename": "info.json",
+  "correlation_coefficient": "Pearson",
+  "real_correlation_threshold": null,
+  "real_association_threshold": null,
+  "num_discrete_bins": 10,
+  "num_rows_subsample": null,
+  "mean_score_ignoring_nan": 0.9417133895582598,
+  "num_nan_scores": 0,
+  "output_dir": "/Users/romandegtarev/generative_tabels/metrics/correlation/baseline/shoppers/tabdiff"
+}

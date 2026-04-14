@@ -1,0 +1,30 @@
+{
+  "dataset": "beijing",
+  "prediction_file": "tabsyn/prediction_beijing.csv",
+  "numeric_columns": [
+    "pm2.5",
+    "DEWP",
+    "TEMP",
+    "PRES",
+    "Iws",
+    "Is",
+    "Ir"
+  ],
+  "categorical_columns": [
+    "year",
+    "month",
+    "day",
+    "hour",
+    "cbwd"
+  ],
+  "numeric_mean": {
+    "rmse": 0.5293244016464026,
+    "mae": 0.19543679074199058
+  },
+  "categorical_mean": {
+    "accuracy": 0.30129310344827587,
+    "f1": 0.2893133355498573,
+    "precision": 0.29104159486202763,
+    "recall": 0.2895953058840129
+  }
+}

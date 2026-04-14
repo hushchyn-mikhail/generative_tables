@@ -1,0 +1,21 @@
+{
+  "dataset_name": "default",
+  "model_name": "tabdiff",
+  "dataset_dir": "/Users/romandegtarev/generative_tabels/data/default",
+  "real_path": "/Users/romandegtarev/generative_tabels/data/default/train.csv",
+  "metadata_path": "/Users/romandegtarev/generative_tabels/data/default/info.json",
+  "pred_path": "/Users/romandegtarev/generative_tabels/tabdiff/prediction_default.csv",
+  "n_rows_real": 27001,
+  "n_rows_synthetic": 3001,
+  "n_columns": 24,
+  "train_filename": "train.csv",
+  "info_filename": "info.json",
+  "correlation_coefficient": "Pearson",
+  "real_correlation_threshold": null,
+  "real_association_threshold": null,
+  "num_discrete_bins": 10,
+  "num_rows_subsample": null,
+  "mean_score_ignoring_nan": 0.9616225723660546,
+  "num_nan_scores": 0,
+  "output_dir": "/Users/romandegtarev/generative_tabels/metrics/correlation/exp2/default/tabdiff"
+}

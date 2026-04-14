@@ -1,0 +1,29 @@
+{
+  "dataset": "magic",
+  "prediction_file": "tabsyn/prediction_magic.csv",
+  "numeric_columns": [
+    "Length",
+    "Width",
+    "Size",
+    "Conc",
+    "Conc1",
+    "Asym",
+    "M3Long",
+    "M3Trans",
+    "Alpha",
+    "Dist"
+  ],
+  "categorical_columns": [
+    "class"
+  ],
+  "numeric_mean": {
+    "rmse": 0.7330169456994753,
+    "mae": 0.4629163930020372
+  },
+  "categorical_mean": {
+    "accuracy": 0.5862250262881178,
+    "f1": 0.5512487397482284,
+    "precision": 0.5509998629100035,
+    "recall": 0.5516207033022191
+  }
+}
