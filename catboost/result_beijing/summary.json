@@ -1,0 +1,30 @@
+{
+  "dataset": "beijing",
+  "prediction_file": "catboost/prediction_beijing.csv",
+  "numeric_columns": [
+    "pm2.5",
+    "DEWP",
+    "TEMP",
+    "PRES",
+    "Iws",
+    "Is",
+    "Ir"
+  ],
+  "categorical_columns": [
+    "year",
+    "month",
+    "day",
+    "hour",
+    "cbwd"
+  ],
+  "numeric_mean": {
+    "rmse": 0.48542952351712054,
+    "mae": 0.2583397767863925
+  },
+  "categorical_mean": {
+    "accuracy": 0.35771072796934866,
+    "f1": 0.3291154017649825,
+    "precision": 0.3538819441643395,
+    "recall": 0.33755875275917696
+  }
+}

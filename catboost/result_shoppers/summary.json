@@ -1,0 +1,36 @@
+{
+  "dataset": "shoppers",
+  "prediction_file": "catboost/prediction_shoppers.csv",
+  "numeric_columns": [
+    "Administrative",
+    "Administrative_Duration",
+    "Informational",
+    "Informational_Duration",
+    "ProductRelated",
+    "ProductRelated_Duration",
+    "BounceRates",
+    "ExitRates",
+    "PageValues",
+    "SpecialDay"
+  ],
+  "categorical_columns": [
+    "Month",
+    "OperatingSystems",
+    "Browser",
+    "Region",
+    "TrafficType",
+    "VisitorType",
+    "Weekend",
+    "Revenue"
+  ],
+  "numeric_mean": {
+    "rmse": 0.5310798887427309,
+    "mae": 0.25084619514697726
+  },
+  "categorical_mean": {
+    "accuracy": 0.6771086780210868,
+    "f1": 0.38144068805096787,
+    "precision": 0.47526316223213255,
+    "recall": 0.3813511237688503
+  }
+}
