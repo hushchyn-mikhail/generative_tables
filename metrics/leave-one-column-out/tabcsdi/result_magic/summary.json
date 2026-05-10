@@ -1,0 +1,29 @@
+{
+  "dataset": "magic",
+  "prediction_file": "tabcsdi/new/prediction_magic_new.csv",
+  "numeric_columns": [
+    "Length",
+    "Width",
+    "Size",
+    "Conc",
+    "Conc1",
+    "Asym",
+    "M3Long",
+    "M3Trans",
+    "Alpha",
+    "Dist"
+  ],
+  "categorical_columns": [
+    "class"
+  ],
+  "numeric_mean": {
+    "rmse": 0.7653126845074488,
+    "mae": 0.47493388805822717
+  },
+  "categorical_mean": {
+    "accuracy": 0.7145110410094637,
+    "f1": 0.6840012446750214,
+    "precision": 0.6871293712595318,
+    "recall": 0.6816582526521038
+  }
+}
