@@ -1,0 +1,19 @@
+{
+  "args": {
+    "tabsyn_root": "/home/radegtyarev/projects/imputation_project/submodules/tabsyn",
+    "model_path": "save/adult_tabsyn_onehot_20260203_191904/model.pth",
+    "config": "census_onehot_analog.yaml",
+    "device": "cuda",
+    "seed": 1,
+    "nsample": 10,
+    "eval_batch_size": 512,
+    "bootstrap": 500,
+    "outdir": "/home/radegtyarev/projects/imputation_project/experiments/adult_tabcsdi_onehot/results",
+    "limit_cols": null
+  },
+  "n_columns_evaluated": 15,
+  "outputs": {
+    "per_column_csv": "/home/radegtyarev/projects/imputation_project/experiments/adult_tabcsdi_onehot/results/test2_per_column_metrics_ci.csv",
+    "avg_by_type_csv": "/home/radegtyarev/projects/imputation_project/experiments/adult_tabcsdi_onehot/results/test2_avg_by_type.csv"
+  }
+}

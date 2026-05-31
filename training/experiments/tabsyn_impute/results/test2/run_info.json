@@ -1,0 +1,36 @@
+{
+  "args": {
+    "tabsyn_root": "/home/radegtyarev/projects/imputation_project/submodules/tabsyn",
+    "dataname": "beijing",
+    "gpu": 0,
+    "num_steps": 50,
+    "resample_steps": 10,
+    "bootstrap": 300,
+    "seed": 1,
+    "cat_decoder_type": "mlp",
+    "outdir": "/home/radegtyarev/projects/imputation_project/experiments/tabsyn_impute/results/test2",
+    "outfile": "prediction_beijing.csv"
+  },
+  "dataname": "beijing",
+  "data_dir": "/home/radegtyarev/projects/imputation_project/submodules/tabsyn/data/beijing",
+  "test_shape": [
+    4176,
+    12
+  ],
+  "columns": [
+    "year",
+    "month",
+    "day",
+    "hour",
+    "pm2.5",
+    "DEWP",
+    "TEMP",
+    "PRES",
+    "cbwd",
+    "Iws",
+    "Is",
+    "Ir"
+  ],
+  "prediction_path": "/home/radegtyarev/projects/imputation_project/experiments/tabsyn_impute/results/test2/prediction_beijing.csv",
+  "created_at": "2026-04-21 21:00:09"
+}

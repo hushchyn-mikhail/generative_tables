@@ -1,0 +1,35 @@
+{
+  "args": {
+    "dataname": "beijing",
+    "tabsyn_root": "/home/radegtyarev/projects/imputation_project/submodules/tabsyn",
+    "model_path": "./save/beijing_tabsyn_onehot_20260407_160555/model.pth",
+    "config": "census_onehot_analog.yaml",
+    "device": "cuda:0",
+    "seed": 1,
+    "nsample": 1,
+    "bootstrap": 300,
+    "eval_batch_size": 32,
+    "outdir": "/home/radegtyarev/projects/imputation_project/experiments/tabcsdi_tabsyn_onehot/results/test2",
+    "outfile": "prediction_beijing.csv",
+    "limit_cols": null
+  },
+  "dataset": "beijing",
+  "data_dir": "/home/radegtyarev/projects/imputation_project/submodules/tabsyn/data/beijing",
+  "n_columns_predicted": 12,
+  "prediction_path": "/home/radegtyarev/projects/imputation_project/experiments/tabcsdi_tabsyn_onehot/results/test2/prediction_beijing.csv",
+  "ordered_names": [
+    "pm2.5",
+    "DEWP",
+    "TEMP",
+    "PRES",
+    "Iws",
+    "Is",
+    "Ir",
+    "year",
+    "month",
+    "day",
+    "hour",
+    "cbwd"
+  ],
+  "created_at": "2026-04-07 23:08:13"
+}

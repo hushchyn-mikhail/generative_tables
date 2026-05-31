@@ -1,0 +1,35 @@
+{
+  "args": {
+    "tabsyn_root": "/home/radegtyarev/projects/imputation_project/submodules/tabsyn",
+    "dataname": "adult",
+    "gpu": 0,
+    "missingratio": 0.2,
+    "num_steps": 50,
+    "resample_steps": 10,
+    "bootstrap": 500,
+    "seed": 1,
+    "outdir": "/home/radegtyarev/projects/imputation_project/experiments/tabsyn_impute/results"
+  },
+  "summary": {
+    "num_rmse_mean": 0.12768005545725877,
+    "num_rmse_sigma": 0.035175460078697436,
+    "num_mae_mean": 0.06815043303472139,
+    "num_mae_sigma": 0.04610144979386745,
+    "num_rmse_bs_mean_mean": 0.1275678125695199,
+    "num_rmse_bs_mean_sigma": 0.03521701924513573,
+    "num_mae_bs_mean_mean": 0.06814671884253298,
+    "num_mae_bs_mean_sigma": 0.04611475221151135,
+    "cat_acc_mean": 0.6427791427791427,
+    "cat_acc_sigma": 0.19110022004553034,
+    "cat_f1_mean": 0.3582041396587483,
+    "cat_f1_sigma": 0.22964946914482573,
+    "cat_recall_mean": 0.35342317267329815,
+    "cat_recall_sigma": 0.2299010159320757,
+    "cat_acc_bs_mean_mean": 0.6427393612525987,
+    "cat_acc_bs_mean_sigma": 0.19108660170779831,
+    "cat_f1_bs_mean_mean": 0.36186592124712813,
+    "cat_f1_bs_mean_sigma": 0.22737026491779952,
+    "cat_recall_bs_mean_mean": 0.35744755464183847,
+    "cat_recall_bs_mean_sigma": 0.22782763586268764
+  }
+}

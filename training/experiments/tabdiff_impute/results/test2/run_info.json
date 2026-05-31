@@ -1,0 +1,42 @@
+{
+  "args": {
+    "bootstrap": 300,
+    "tabsyn_root": "/home/radegtyarev/projects/imputation_project/submodules/tabsyn",
+    "tabdiff_root": "/home/radegtyarev/projects/imputation_project/submodules/tabdiff",
+    "dataname": "adult",
+    "gpu": 0,
+    "resample_rounds": 1,
+    "impute_condition": "x_t",
+    "seed": 1,
+    "ckpt_path": null,
+    "exp_name": null,
+    "non_learnable_schedule": false,
+    "outdir": "/home/radegtyarev/projects/imputation_project/experiments/tabdiff_impute/results/test2",
+    "outfile": "prediction_adult.csv"
+  },
+  "dataname": "adult",
+  "data_dir": "/home/radegtyarev/projects/imputation_project/submodules/tabsyn/data/adult",
+  "test_shape": [
+    16281,
+    15
+  ],
+  "columns": [
+    "age",
+    "workclass",
+    "fnlwgt",
+    "education",
+    "education.num",
+    "marital.status",
+    "occupation",
+    "relationship",
+    "race",
+    "sex",
+    "capital.gain",
+    "capital.loss",
+    "hours.per.week",
+    "native.country",
+    "income"
+  ],
+  "prediction_path": "/home/radegtyarev/projects/imputation_project/experiments/tabdiff_impute/results/test2/prediction_adult.csv",
+  "created_at": "2026-04-06 23:04:47"
+}

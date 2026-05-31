@@ -1,0 +1,20 @@
+{
+  "args": {
+    "tabsyn_root": "/home/radegtyarev/projects/imputation_project/submodules/tabsyn",
+    "dataname": "adult",
+    "gpu": 0,
+    "missingratio": 0.2,
+    "num_steps": 40,
+    "resample_steps": 10,
+    "bootstrap": 500,
+    "seed": 1,
+    "outdir": "experiments/tabsyn_impute/results"
+  },
+  "summary": {
+    "num_rmse_mean": 0.12886633399126704,
+    "num_mae_mean": 0.06869579044451823,
+    "cat_acc_mean": 0.6410046410046409,
+    "cat_f1_mean": 0.35355185860927696,
+    "cat_recall_mean": 0.34941678306934754
+  }
+}

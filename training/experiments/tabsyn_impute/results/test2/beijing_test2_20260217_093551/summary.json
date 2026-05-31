@@ -1,0 +1,19 @@
+{
+  "args": {
+    "tabsyn_root": "/home/radegtyarev/projects/imputation_project/submodules/tabsyn",
+    "dataname": "beijing",
+    "gpu": 0,
+    "num_steps": 50,
+    "resample_steps": 10,
+    "bootstrap": 300,
+    "seed": 1,
+    "outdir": "/home/radegtyarev/projects/imputation_project/experiments/tabsyn_impute/results/test2"
+  },
+  "summary": {
+    "num_rmse_mean": 0.09123477746880666,
+    "num_mae_mean": 0.056404031223761725,
+    "cat_acc_mean": 0.18195242656449553,
+    "cat_f1_mean": 0.16787208938530132,
+    "cat_recall_mean": 0.17010054054475465
+  }
+}

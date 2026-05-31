@@ -1,0 +1,23 @@
+{
+  "args": {
+    "tabsyn_root": "/home/radegtyarev/projects/imputation_project/submodules/tabsyn",
+    "tabdiff_root": "/home/radegtyarev/projects/imputation_project/submodules/tabdiff",
+    "dataname": "adult",
+    "gpu": 0,
+    "resample_rounds": 1,
+    "impute_condition": "x_t",
+    "bootstrap": 300,
+    "seed": 1,
+    "ckpt_path": null,
+    "exp_name": null,
+    "non_learnable_schedule": false,
+    "outdir": "/home/radegtyarev/projects/imputation_project/experiments/tabdiff_impute/results/test2"
+  },
+  "summary": {
+    "num_rmse_mean": 1.0723764132752411,
+    "num_mae_mean": 0.5578856321300276,
+    "cat_acc_mean": 0.6154754348968463,
+    "cat_f1_mean": 0.34900280746372336,
+    "cat_recall_mean": 0.3484059749201153
+  }
+}

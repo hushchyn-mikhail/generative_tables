@@ -1,0 +1,6 @@
+type,metric,mean_over_columns
+numeric,MAE,0.05424777749584367
+numeric,RMSE,0.10197465550651154
+categorical,Accuracy,0.5292937370759372
+categorical,F1_macro,0.18430394836312786
+categorical,Recall_macro,0.20347574204385777

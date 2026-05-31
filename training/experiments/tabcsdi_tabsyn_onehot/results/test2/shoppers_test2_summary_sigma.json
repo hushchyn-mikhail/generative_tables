@@ -1,0 +1,21 @@
+{
+  "args": {
+    "dataname": "shoppers",
+    "tabsyn_root": "/home/radegtyarev/projects/imputation_project/submodules/tabsyn",
+    "model_path": "./save/shoppers_tabsyn_onehot_20260224_083810/model.pth",
+    "config": "census_onehot_analog.yaml",
+    "device": "cuda:0",
+    "seed": 1,
+    "nsample": 1,
+    "eval_batch_size": 32,
+    "bootstrap": 300,
+    "outdir": "/home/radegtyarev/projects/imputation_project/experiments/tabcsdi_tabsyn_onehot/results/test2",
+    "limit_cols": null
+  },
+  "dataset": "shoppers",
+  "n_columns_evaluated": 18,
+  "outputs": {
+    "per_column_csv": "/home/radegtyarev/projects/imputation_project/experiments/tabcsdi_tabsyn_onehot/results/test2/shoppers_test2_per_column_metrics_sigma.csv",
+    "avg_by_type_csv": "/home/radegtyarev/projects/imputation_project/experiments/tabcsdi_tabsyn_onehot/results/test2/shoppers_test2_avg_by_type_sigma.csv"
+  }
+}

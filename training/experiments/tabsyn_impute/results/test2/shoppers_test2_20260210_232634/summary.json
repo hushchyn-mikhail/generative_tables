@@ -1,0 +1,19 @@
+{
+  "args": {
+    "tabsyn_root": "/home/radegtyarev/projects/imputation_project/submodules/tabsyn",
+    "dataname": "shoppers",
+    "gpu": 0,
+    "num_steps": 50,
+    "resample_steps": 10,
+    "bootstrap": 300,
+    "seed": 1,
+    "outdir": "/home/radegtyarev/projects/imputation_project/experiments/tabsyn_impute/results/test2"
+  },
+  "summary": {
+    "num_rmse_mean": 0.047058013306834776,
+    "num_mae_mean": 0.01957423972378683,
+    "cat_acc_mean": 0.551094890510949,
+    "cat_f1_mean": 0.3590124261476995,
+    "cat_recall_mean": 0.34690240659930827
+  }
+}
